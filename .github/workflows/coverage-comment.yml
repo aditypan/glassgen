@@ -1,0 +1,46 @@
+name: Coverage Comment
+
+# Runs in the base-repo context (write perms) after the Test workflow finishes,
+# so coverage comments work for PRs from forks. We never check out PR code in
+# this workflow — we only consume the artifact uploaded by the Test workflow.
+
+on:
+  workflow_run:
+    workflows: [Test]
+    types: [completed]
+
+permissions:
+  pull-requests: write
+  contents: read
+  actions: read
+
+jobs:
+  comment:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-data
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read PR number
+        id: pr
+        run: echo "number=$(cat pr_number.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Post coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-xml-coverage-path: ./coverage.xml
+          issue-number: ${{ steps.pr.outputs.number }}
+          title: "Test Coverage Report"
+          badge-title: "Coverage"
+          hide-badge: false
+          hide-report: false
+          create-new-comment: false
+          hide-comment: false
+          report-only-changed-files: false
+          remove-link-from-badge: false
+          unique-id-for-comment: "python-coverage"

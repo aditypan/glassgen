@@ -14,9 +14,7 @@
   <a target="_blank" href="(https://github.com/glassflow/glassgen/actions">
     <img src="https://github.com/glassflow/glassgen/workflows/Test/badge.svg?labelColor=&color=e69e3a">
   </a>
-<!-- Pytest Coverage Comment:Begin -->
-  <img src=https://img.shields.io/badge/coverage-87%25-green>
-<!-- Pytest Coverage Comment:End -->
+  <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/glassflow/glassgen/badges/coverage.json">
 </p>
 
 
